@@ -26,7 +26,7 @@
       <actuators>
 	<epuck_wheels implementation="default" />
         <leds implementation="default" medium="leds" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.50" />
+        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.25" />
       </actuators>
       <sensors>
         <!--epuck_motor_ground implementation="rot_z_only" /-->
@@ -82,7 +82,7 @@
 	  exit="true"            
 	  percent_black="PERCENT_BLACK"
 	  percent_red="0"
-	  save_every_ticks="100000"
+	  save_every_ticks="10000"
 	  save_every_ticks_flag="true"
 	  save_every_run_flag="true"
 	  save_blockchain_flag="true"
@@ -126,16 +126,16 @@
      <floor id="floor"
            source="loop_functions"
            pixels_per_meter="50" />
-    <box id="wall_north" size="ARENASIZEDIM,0.025,0.08" movable="false">
+    <box id="wall_north" size="ARENASIZEDIM,0.025,0.04" movable="false">
       <body position="ARENASIZEHALF,ARENASIZEPLUSSMALL,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="ARENASIZEDIM,0.025,0.08" movable="false">
+    <box id="wall_south" size="ARENASIZEDIM,0.025,0.04" movable="false">
       <body position="ARENASIZEHALF,0.0075,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.025,ARENASIZEDIM,0.08" movable="false">
+    <box id="wall_east" size="0.025,ARENASIZEDIM,0.04" movable="false">
       <body position="ARENASIZEPLUSSMALL,ARENASIZEHALF,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.025,ARENASIZEDIM,0.08" movable="false">
+    <box id="wall_west" size="0.025,ARENASIZEDIM,0.04" movable="false">
       <body position="0.0075,ARENASIZEHALF ,0" orientation="0,0,0" />
     </box>
 

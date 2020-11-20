@@ -29,6 +29,7 @@ public:
   std::string dockerExecBootstrapReturn(std::string cmd);
   void execTemplate(std::string templateName);
   void scInterface(std::string function, long long wei);
+  void scInterface(std::string function, std::string wei);
   void scInterface(std::string function, int arg, long long wei);
   void scInterface(std::string function, int arg, std::string wei);
   void scInterfaceCall0(std::string function, long long wei);

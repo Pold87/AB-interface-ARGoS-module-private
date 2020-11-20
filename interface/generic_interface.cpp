@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <stdexcept>
 
+#define DEBUG true
+
 using namespace std;
 
 // TODO: Maybe I can delete this constructor, it should be enough to
@@ -105,8 +107,10 @@ string GethInterface::dockerExecReturn(const string cmd) {
     		<< containerNameFull << " "
 		<< cmd;
 
-  cout << commandStream.str() << endl;
-
+  if (DEBUG) {
+    cout << commandStream.str() << endl;
+  }
+  
   string result = exec(commandStream.str());
   return result;
 }
@@ -129,9 +133,11 @@ void GethInterface::dockerExecBackground(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -i "
   		<< containerNameFull << " "
- 		<< cmd << " 2>&1 > /dev/null &";
-  
-  cout << commandStream.str() << endl;
+ 		<< cmd << "  &";
+
+  if (DEBUG) {
+    cout << commandStream.str() << endl;
+  }
  
   system(commandStream.str().c_str());
 }
@@ -166,6 +172,14 @@ void GethInterface::execTemplate(std::string templateName, int numArgs,
 }
 
 void GethInterface::scInterface(std::string function, long long wei) {
+  ostringstream commandStream;
+  commandStream << "bash /root/generic_sc_interface_0.sh \'"
+		<< contractABI << "\' " << contractAddress << " "
+		<< function << " " << wei;  
+  dockerExecBackground(commandStream.str());
+}
+
+void GethInterface::scInterface(std::string function, std::string wei) {
   ostringstream commandStream;
   commandStream << "bash /root/generic_sc_interface_0.sh \'"
 		<< contractABI << "\' " << contractAddress << " "

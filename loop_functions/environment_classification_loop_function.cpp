@@ -255,13 +255,13 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       
 
       mean = cController.getGethInterface().scReturn0("getMean", 0);
-      voteCount = cController.getGethInterface().scReturn0("voteCount", 0);    
-      localCount = cController.getGethInterface().scReturn0("weightCount", 0);    
-      blockNumber = cController.getGethInterface().scReturn0("getBlockNumber", 0);  
+      voteCount = cController.getGethInterface().scReturn0("getVoteCount", 0);    
+      localCount = cController.getGethInterface().scReturn0("getVoteOkCount", 0);    
+      blockNumber = cController.getGethInterface().scReturn0("getRobotCount", 0);  
       blockchainSize = cController.getGethInterface().getBlockChainSize();
       
-      cout << "Getting weight" << endl;
-      weight = cController.getGethInterface().scReturn0("getWeight", 0);
+      //      cout << "Getting weight" << endl;
+      //      weight = cController.getGethInterface().scReturn0("getWeight", 0);
       }
       s++;      
     }
@@ -272,13 +272,13 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
     }
     
     if (everyTicksFile.is_open()) {
-      everyTicksFile << (GetSpace().GetSimulationClock()) << "\t";
-      everyTicksFile << number_of_runs << "\t";
+      //everyTicksFile << (GetSpace().GetSimulationClock()) << "\t";
+      //everyTicksFile << number_of_runs << "\t";
 
-      for ( UInt32 c = 0; c < N_COL; c++ )
-      {
-        everyTicksFile << robotsInExplorationCounter[c] << "\t\t" << robotsInDiffusionCounter[c]  << "\t\t" << blockchainSize;
-      }
+      //for ( UInt32 c = 0; c < N_COL; c++ )
+      //{
+        everyTicksFile << blockchainSize;
+	//}
       everyTicksFile << std::endl;
     }
 }
@@ -521,7 +521,118 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
 	  }
 	}
 		
+
+	// Replicate 1:1 the physical environment in the lab
+      } if (colorMixing == 5) {
+	grid[0] = 2;
+	grid[1] = 2;
+	grid[2] = 2;	
+	grid[3] = 2;
+	grid[4] = 1;
+	grid[5] = 1;	
+	grid[6] = 2;
+	grid[7] = 2;
+	grid[8] = 2;	
+	grid[9] = 2;
 	
+	grid[10] = 2;
+	grid[11] = 2;	
+	grid[12] = 2;
+	grid[13] = 2;
+	grid[14] = 2;	
+	grid[15] = 2;
+	grid[16] = 2;
+	grid[17] = 2;	
+	grid[18] = 2;
+	grid[19] = 2;
+
+	grid[20] = 2;	
+	grid[21] = 2;
+	grid[22] = 2;
+	grid[23] = 1;	
+	grid[24] = 2;
+	grid[25] = 1;
+	grid[26] = 2;	
+	grid[27] = 2;
+	grid[28] = 2;
+	grid[29] = 2;
+	
+	grid[30] = 2;
+	grid[31] = 1;
+	grid[32] = 1;	
+	grid[33] = 1;
+	grid[34] = 1;
+	grid[35] = 1;	
+	grid[36] = 2;
+	grid[37] = 1;
+	grid[38] = 2;	
+	grid[39] = 1;
+	
+	grid[40] = 1;
+	grid[41] = 2;
+	grid[42] = 2;
+	grid[43] = 1;	
+	grid[44] = 1;
+	grid[45] = 2;
+	grid[46] = 2;
+	grid[47] = 2;
+	grid[48] = 2;	
+	grid[49] = 2;
+	
+	grid[50] = 2;
+	grid[51] = 2;
+	grid[52] = 1;	
+	grid[53] = 2;
+	grid[54] = 1;
+	grid[55] = 2;	
+	grid[56] = 1;
+	grid[57] = 2;
+	grid[58] = 2;	
+	grid[59] = 2;
+	
+	grid[60] = 2;
+	grid[61] = 1;
+	grid[62] = 1;	
+	grid[63] = 1;
+	grid[64] = 2;
+	grid[65] = 2;	
+	grid[66] = 1;
+	grid[67] = 1;
+	grid[68] = 2;	
+	grid[69] = 1;
+	
+	grid[70] = 2;
+	grid[71] = 1;
+	grid[72] = 2;	
+	grid[73] = 2;
+	grid[74] = 2;
+	grid[75] = 1;	
+	grid[76] = 2;
+	grid[77] = 2;
+	grid[78] = 2;	
+	grid[79] = 1;
+	
+	grid[80] = 1;
+	grid[81] = 2;
+	grid[82] = 2;	
+	grid[83] = 2;
+	grid[84] = 2;
+	grid[85] = 1;	
+	grid[86] = 2;
+	grid[87] = 2;
+	grid[88] = 2;	
+	grid[89] = 2;
+	
+	grid[90] = 2;
+	grid[91] = 2;
+	grid[92] = 1;	
+	grid[93] = 1;
+	grid[94] = 2;
+	grid[95] = 1;	
+	grid[96] = 2;
+	grid[97] = 2;
+	grid[98] = 2;	
+	grid[99] = 2;	
       } else {
 
     

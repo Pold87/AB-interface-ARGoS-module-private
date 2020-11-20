@@ -34,8 +34,37 @@ for i in `seq 1 $REPETITIONS`; do
 
         # Create smart contract with specified tau (threshold)
 	  rm -f ${SCOUTFILE} ${CONTRACT}          
-	  sed -e "s|TAU|$TAU|g" ${SCTEMPLATE} > ${SCOUTFILE}
-          cp ${SCOUTFILE} ${CONTRACT}         	  				    
+	  #sed -e "s|TAU|$TAU|g" ${SCTEMPLATE} > ${SCOUTFILE}
+          cp ${SCTEMPLATE} ${CONTRACT}
+
+	  solc --overwrite --abi --bin-runtime ${CONTRACT} -o ${DOCKERBASE}/geth/shared/contract_files
+
+	  # Generate the genesis block; first: read in compiled smart contract
+	  BINDATA=`cat ${DOCKERBASE}/geth/shared/contract_files/Estimation.bin-runtime`
+
+	  # Create genesis using puppeth
+	  bash ${DOCKERBASE}/geth/files/reset-genesis ${NUMROBOTS}
+	  
+	  # Insert the smart contract into the genesis 
+	  sed -ie "s|123\": {|123\": {\n\"code\": \"0xBINDATA\",|g" ${GENESIS}
+	  
+	  sed -ie "s|BINDATA|$BINDATA|g" ${GENESIS}
+
+	  # Change the gas limit
+	  sed -ie "s|0x47b760|0x9000000000000|g" ${GENESIS}
+
+	  # Change the value of the pre-funded accounts
+	  sed -ie "s|\"0x200000000000000000000000000000000000000000000000000000000000000\"|\"0xde0b6b3a7640000\"|g" ${GENESIS}
+
+	  # Undo for the contract account (first match)
+	  sed -ie "0,/\"0xde0b6b3a7640000\"/s//\"0x200000000000000000000000000000000000000000000000000000000000000\"/" ${GENESIS}
+	  
+	  # Update the contract ABI to make it compatible with the
+	  # geth console (latest solc and latest geth console are
+	  # incompatibe)
+	  OLDABI="${DOCKERBASE}/geth/shared/contract_files/Estimation.abi"
+	  sed -e "s|\"stateMutability\":\"payable\"|\"stateMutability\":\"payable\",\"payable\":\"true\"|g" $OLDABI > $CONTRACTABI
+	  
 	  echo "I created the contract"
 	  
 	# Create ARGoS template

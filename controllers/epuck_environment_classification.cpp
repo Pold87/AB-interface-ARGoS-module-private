@@ -100,6 +100,11 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   enodes[robotId] = gethInterface->getEnode();
   gethInterface->startMining();
 
+  string wei;
+  wei = "0x1fffffffffffffffffffffffffffffffffffffffffffffa9438a1d29cf00000";
+    
+  gethInterface->scInterface("registerRobot", "0");
+  
   // Colours read from robots could be changed and added here!
   red.Set(COLOR_STRENGTH, 0, 0, ALPHA_CHANNEL); 
   green.Set(0, COLOR_STRENGTH, 0, ALPHA_CHANNEL);
@@ -278,28 +283,39 @@ void EPuck_Environment_Classification::Explore() {
     wei = ssHex.str();
    }
 
-   cout << "ticketPrice is " << wei << endl;
    // Corresponds to 40 ether
-    //string wei = "0x22B1C8C1227A00000";
+   wei = "0x22B1C8C1227A00000";
 
-   // string wei = "0x0";
+   //wei = "0x0";
 
+   cout << "ticketPrice is " << wei << endl;
+   
     // Submit a vote via the new interface
     int arg = opinionInt;
 
-    gethInterface->scInterface("vote", arg, wei);
+    gethInterface->scInterface("askForUBI", "0");
+    gethInterface->scInterface("askForPayout", "0");    
+    gethInterface->scInterface("sendVote", arg, wei);
+    gethInterface->scInterface("updateMean", "0");
+    string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
 
+    cout << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
+    
+    if (stoi(consensusReachedStr) == 2) {
+      consensusReached = true;
+      cout << "A consensus was reached" << endl;
+    } else {
+      cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
+    }
+
+    
     mySubmittedVotes++;
+
+    cout << "mySubmittedVotes is " << mySubmittedVotes << endl;
 
     CRange<Real> zeroOne(0.0, 1.0);
     Real p = m_pcRNG->Uniform(zeroOne);
     
-    // Robots have a 10 % chance of calling the payout function
-    // TODO: not used anymore, I just included it in the vote function
-    //if (p < 0.1) {
-    //  gethInterface->scInterface("askForPayout", 0);
-    //}
-
     // The Byzantine styles between 10 and 20 cause flooding/spamming
     if (byzantineStyle > 10 && byzantineStyle < 20) {
       for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
@@ -315,16 +331,6 @@ void EPuck_Environment_Classification::Explore() {
 }
 
 void EPuck_Environment_Classification::Diffusing() {
-
-  if (simulationParams.determineConsensus) {
-
-    // Query if a consensus has been reached 
-    if (!threadCurrentlyRunning) {
-      threadCurrentlyRunning = true;
-      thread t1(&EPuck_Environment_Classification::WaitForDecision, this);
-      t1.detach();
-    }
-  }
 
   // Change to EXPLORING state and choose another opinion with decision rules
   m_sStateData.State = SStateData::STATE_EXPLORING;
@@ -405,7 +411,6 @@ void EPuck_Environment_Classification::RandomWalk() {
 
 // Wait until a transaction is mined and the corresponding event is created
 void EPuck_Environment_Classification::WaitForDecision() {
-
   string eventResult;
 
   cout << "Robot id is " << robotId << endl;
@@ -435,6 +440,11 @@ void EPuck_Environment_Classification::ConnectAndListen() {
 
   bool containedJammer = false;
   for (size_t i = 0; i < tPackets.size(); ++i) {
+
+    cout << "Robot id is " << robotId << endl;
+    cout << "Neighbors contains " << tPackets[i]->Data[0] << endl;
+    cout << "End robot " << robotId << endl;
+    
     currentNeighbors.insert(tPackets[i]->Data[0]);
     /* Check if there's a jammer */
     if (tPackets[i]->Data[3] == 1)
@@ -443,6 +453,11 @@ void EPuck_Environment_Classification::ConnectAndListen() {
   if (containedJammer)
     currentNeighbors.clear();
 
+  //currentNeighbors.insert(1);
+  //currentNeighbors.insert(2);
+  //currentNeighbors.insert(3);
+  //currentNeighbors.insert(4);
+  
   UpdateNeighbors(currentNeighbors);
   m_pcRABS->ClearPackets();
 }
@@ -490,25 +505,36 @@ void EPuck_Environment_Classification::UpdateNeighbors(set<int> newNeighbors) {
   std::set_difference(newNeighbors.begin(), newNeighbors.end(),
                       neighbors.begin(), neighbors.end(),
                       std::inserter(neighborsToAdd, neighborsToAdd.end()));
-
+  cout << "Robot id is " << robotId << endl;
+  cout << " old neighbors";
   std::set<int>::iterator it;
   for (it = neighbors.begin(); it != neighbors.end(); ++it) {
     int i = *it;
+    cout << i << " ";
   }
+  cout << endl;
 
+  cout << " new neighbors";
   for (it = newNeighbors.begin(); it != newNeighbors.end(); ++it) {
     int i = *it;
+    cout << i << " ";
   }
+  cout << endl;
 
   for (it = neighborsToRemove.begin(); it != neighborsToRemove.end(); ++it) {
     int i = *it;
+    cout << " removing " << i;
     gethInterface->removePeer(enodes[i]);
   }
+  cout << endl;
 
   for (it = neighborsToAdd.begin(); it != neighborsToAdd.end(); ++it) {
     int i = *it;
+    cout << "adding " << i << " ";
     gethInterface->addPeer(enodes[i]);
   }
+  cout << endl;
+  cout << "Finished Robot " << robotId << endl;
 
   // Update neighbor array
   set<int> neighborsTmp(newNeighbors);
