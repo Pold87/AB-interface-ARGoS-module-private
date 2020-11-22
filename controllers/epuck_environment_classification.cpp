@@ -288,7 +288,7 @@ void EPuck_Environment_Classification::Explore() {
 
    //wei = "0x0";
 
-   cout << "ticketPrice is " << wei << endl;
+   //cout << "ticketPrice is " << wei << endl;
    
     // Submit a vote via the new interface
     int arg = opinionInt;
@@ -441,9 +441,9 @@ void EPuck_Environment_Classification::ConnectAndListen() {
   bool containedJammer = false;
   for (size_t i = 0; i < tPackets.size(); ++i) {
 
-    cout << "Robot id is " << robotId << endl;
-    cout << "Neighbors contains " << tPackets[i]->Data[0] << endl;
-    cout << "End robot " << robotId << endl;
+    //cout << "Robot id is " << robotId << endl;
+    //cout << "Neighbors contains " << tPackets[i]->Data[0] << endl;
+    //cout << "End robot " << robotId << endl;
     
     currentNeighbors.insert(tPackets[i]->Data[0]);
     /* Check if there's a jammer */
@@ -505,36 +505,36 @@ void EPuck_Environment_Classification::UpdateNeighbors(set<int> newNeighbors) {
   std::set_difference(newNeighbors.begin(), newNeighbors.end(),
                       neighbors.begin(), neighbors.end(),
                       std::inserter(neighborsToAdd, neighborsToAdd.end()));
-  cout << "Robot id is " << robotId << endl;
-  cout << " old neighbors";
+  //cout << "Robot id is " << robotId << endl;
+  //cout << " old neighbors";
   std::set<int>::iterator it;
   for (it = neighbors.begin(); it != neighbors.end(); ++it) {
     int i = *it;
-    cout << i << " ";
+    //cout << i << " ";
   }
-  cout << endl;
+  //cout << endl;
 
-  cout << " new neighbors";
+  //cout << " new neighbors";
   for (it = newNeighbors.begin(); it != newNeighbors.end(); ++it) {
     int i = *it;
-    cout << i << " ";
+    //cout << i << " ";
   }
-  cout << endl;
+  //cout << endl;
 
   for (it = neighborsToRemove.begin(); it != neighborsToRemove.end(); ++it) {
     int i = *it;
     cout << " removing " << i;
     gethInterface->removePeer(enodes[i]);
   }
-  cout << endl;
+  //cout << endl;
 
   for (it = neighborsToAdd.begin(); it != neighborsToAdd.end(); ++it) {
     int i = *it;
     cout << "adding " << i << " ";
     gethInterface->addPeer(enodes[i]);
   }
-  cout << endl;
-  cout << "Finished Robot " << robotId << endl;
+  //cout << endl;
+  //cout << "Finished Robot " << robotId << endl;
 
   // Update neighbor array
   set<int> neighborsTmp(newNeighbors);
