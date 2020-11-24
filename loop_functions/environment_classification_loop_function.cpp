@@ -1056,6 +1056,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
       totalConsensusReached = totalConsensusReached && cController.getConsensusReached();
     }
 
+
     if (totalConsensusReached)
     {
       consensusReached = 100;

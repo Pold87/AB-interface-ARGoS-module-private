@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdexcept>
 
-#define DEBUG true
+#define DEBUG false
 
 using namespace std;
 

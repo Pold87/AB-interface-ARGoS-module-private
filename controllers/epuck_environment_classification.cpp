@@ -68,6 +68,7 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   scMean = 0;
   useFixedEther = true;
   mySubmittedVotes = 0;
+  myCounter = 0;
   // Initialize the actuators (and sensors) and the initial velocity as straight
   // walking
   m_pcWheels = GetActuator<CCI_EPuckWheelsActuator>("epuck_wheels");
@@ -150,6 +151,8 @@ void EPuck_Environment_Classification::prepare() {
 
 void EPuck_Environment_Classification::ControlStep() {
 
+  myCounter++;
+
   if (consensusReached)
     cout << "Consensus has been reached !!!" << endl;
   
@@ -190,6 +193,22 @@ void EPuck_Environment_Classification::Explore() {
   // exploration state.
   if (m_sStateData.remainingExplorationTime > 0) {
     m_sStateData.remainingExplorationTime--;
+
+
+	if (myCounter % 10 == robotId) {
+
+    string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
+
+    cout << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
+    
+    if (stoi(consensusReachedStr) == 2) {
+      consensusReached = true;
+      cout << "A consensus was reached" << endl;
+    } else {
+      cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
+    }
+
+	}
   }
 
   // If its time to change state, then the robot has to reset his own variables:
@@ -208,7 +227,8 @@ void EPuck_Environment_Classification::Explore() {
     cout << endl << "actual opinion is " << opinion.actualOpCol << endl;
     cout << endl << "actual opinion count " << opinion.countedCellOfActualOpinion << endl;
     cout << "count is " << collectedData.count << endl;
-    cout << opinion.quality << endl;
+    cout << "opinion.quality is " << opinion.quality << endl;
+   cout << "myCounter is " << myCounter << endl;
 
     // If this robot is a Byzantine robot, it always uses quality estimate 1.0
     switch (byzantineStyle) {
@@ -257,9 +277,9 @@ void EPuck_Environment_Classification::Explore() {
       }
     }
     
-    cout << opinion.quality << endl;
-    opinion.countedCellOfActualOpinion = 0;
-    collectedData.count = 0;
+    //cout << opinion.quality << endl;
+    //opinion.countedCellOfActualOpinion = 0;
+    //collectedData.count = 0;
     m_sStateData.State = SStateData::STATE_DIFFUSING;
     
     // Convert opinion quality to a value between 0 and 10000000
@@ -297,17 +317,6 @@ void EPuck_Environment_Classification::Explore() {
     gethInterface->scInterface("askForPayout", "0");    
     gethInterface->scInterface("sendVote", arg, wei);
     gethInterface->scInterface("updateMean", "0");
-    string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
-
-    cout << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
-    
-    if (stoi(consensusReachedStr) == 2) {
-      consensusReached = true;
-      cout << "A consensus was reached" << endl;
-    } else {
-      cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
-    }
-
     
     mySubmittedVotes++;
 

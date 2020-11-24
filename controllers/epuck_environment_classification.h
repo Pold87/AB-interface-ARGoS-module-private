@@ -187,6 +187,7 @@ private:
   CColor red, blue, green;
   bool useFixedEther;
   int mySubmittedVotes;
+  int myCounter;
 };
 
 #endif
