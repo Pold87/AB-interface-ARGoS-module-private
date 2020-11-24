@@ -130,6 +130,7 @@ public:
   }
 
   inline int getMySubmittedVotes() {return mySubmittedVotes; }
+  inline int getRobotId() {return robotId; }
   inline std::string getEnode() { return enode; }
   inline int getByzantineStyle() { return byzantineStyle; }
   inline bool getConsensusReached() { return consensusReached; }

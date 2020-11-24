@@ -352,7 +352,7 @@ bool GethInterface::isConsensusReached() {
 std::string GethInterface::getContainerExtension(string cn, string containerName) {
   ostringstream commandStream;
   commandStream << "docker service ps -f \'name="
-		<< cn << "\' "
+		<< cn << ".\' "
 		<< containerName // TODO: use a variable instead
 		<< " -q --no-trunc | head -n1";
 

@@ -153,8 +153,8 @@ void EPuck_Environment_Classification::ControlStep() {
 
   myCounter++;
 
-  if (consensusReached)
-    cout << "Consensus has been reached !!!" << endl;
+  //if (consensusReached)
+  //  cout << "Consensus has been reached !!!" << endl;
   
   ConnectAndListen();
   TurnLeds();
@@ -195,11 +195,12 @@ void EPuck_Environment_Classification::Explore() {
     m_sStateData.remainingExplorationTime--;
 
 
-	if (myCounter % 10 == robotId) {
+	if (myCounter % 10 == robotId % 10) {
 
     string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
 
-    cout << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
+    
+    cout << "robot id is " << robotId << " " << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
     
     if (stoi(consensusReachedStr) == 2) {
       consensusReached = true;
