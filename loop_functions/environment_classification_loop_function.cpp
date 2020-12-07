@@ -1054,7 +1054,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
 
       EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
       totalConsensusReached = totalConsensusReached && cController.getConsensusReached();
-      cout << "Robot ID is " << cController.getRobotId() << "Consensus is " << cController.getConsensusReached() << endl;
+      // cout << "Robot ID is " << cController.getRobotId() << "Consensus is " << cController.getConsensusReached() << endl;
     }
 
 

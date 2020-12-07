@@ -55,7 +55,8 @@ for i in `seq 1 $REPETITIONS`; do
 
 	  # Change the value of the pre-funded accounts
 	  sed -ie "s|\"0x200000000000000000000000000000000000000000000000000000000000000\"|\"0xde0b6b3a7640000\"|g" ${GENESIS}
-
+# 0x1236efcbcbb340000 = 21 ether
+# 0xde0b6b3a7640000 = 1 ether
 	  # Undo for the contract account (first match)
 	  sed -ie "0,/\"0xde0b6b3a7640000\"/s//\"0x200000000000000000000000000000000000000000000000000000000000000\"/" ${GENESIS}
 	  

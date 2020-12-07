@@ -203,13 +203,13 @@ void EPuck_Environment_Classification::Explore() {
     string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
 
     
-    cout << "robot id is " << robotId << " " << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
+    //cout << "robot id is " << robotId << " " << "consensus result is " << consensusReachedStr << "number" << stoi(consensusReachedStr) << endl;
     
     if (stoi(consensusReachedStr) == 2) {
       consensusReached = true;
-      cout << "A consensus was reached" << endl;
+      //cout << "A consensus was reached" << endl;
     } else {
-      cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
+      //cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
     }
 
 	}
@@ -423,7 +423,7 @@ void EPuck_Environment_Classification::RandomWalk() {
 void EPuck_Environment_Classification::WaitForDecision() {
   string eventResult;
 
-  cout << "Robot id is " << robotId << endl;
+  //cout << "Robot id is " << robotId << endl;
   string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
 
   if (!useFixedEther) {
@@ -435,7 +435,7 @@ void EPuck_Environment_Classification::WaitForDecision() {
     consensusReached = true;
     cout << "A consensus was reached" << endl;
   } else {
-    cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
+    //cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
   }
 
   threadCurrentlyRunning = false;
