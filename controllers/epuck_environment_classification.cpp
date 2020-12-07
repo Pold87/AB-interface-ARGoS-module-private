@@ -197,6 +197,9 @@ void EPuck_Environment_Classification::Explore() {
 
 	if (myCounter % 10 == robotId % 10) {
 
+    gethInterface->scInterface("askForUBI", "0");
+    gethInterface->scInterface("askForPayout", "0");    
+    gethInterface->scInterface("updateMean", "0");
     string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
 
     
@@ -314,10 +317,7 @@ void EPuck_Environment_Classification::Explore() {
     // Submit a vote via the new interface
     int arg = opinionInt;
 
-    gethInterface->scInterface("askForUBI", "0");
-    gethInterface->scInterface("askForPayout", "0");    
     gethInterface->scInterface("sendVote", arg, wei);
-    gethInterface->scInterface("updateMean", "0");
     
     mySubmittedVotes++;
 
