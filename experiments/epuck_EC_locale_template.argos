@@ -26,7 +26,7 @@
       <actuators>
 	<epuck_wheels implementation="default" />
         <leds implementation="default" medium="leds" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.25" />
+        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.10" />
       </actuators>
       <sensors>
         <!--epuck_motor_ground implementation="rot_z_only" /-->
