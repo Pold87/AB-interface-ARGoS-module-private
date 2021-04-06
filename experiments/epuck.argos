@@ -73,8 +73,13 @@
     <cells  number_of_red_cells="0"
 	    arena_size="2.0"
 	    cell_dimension="0.1"
+<<<<<<< HEAD
 	  base_dir_loop="/home/volker/software/AB-interface/ARGoS-module/controllers/epuck_environment_classification/"
 	  data_dir="data/10_Increasing_Arena_Size_Increasing_Tiles_Constant_Density_Byz_3-1/1000000/"
+=======
+	  base_dir_loop="/home/eksander/AB-interface/ARGoS-module/controllers/epuck_environment_classification/"
+	  data_dir="data/2_Increasing_Size_No_Byz_3-6/1000000/"
+>>>>>>> 822486754f22c927c34a3e4691f23f6429067fc1
           number_of_white_cells="0"
 	  number_of_black_cells="0"
 	  using_percentage="true"
@@ -89,12 +94,21 @@
 	  save_every_robot_flag="false"
 	  save_every_quality_flag="false"
 	  save_global_stat_flag="false"
+<<<<<<< HEAD
 	  radix="num20_black68_byz4_size2.0_run20"
 	  number_of_robots="20"
 	  number_of_runs="1"
 	  number_of_qualities="2"
 	  r_0="0"
 	  w_0="20"
+=======
+	  radix="num9_black68_byz0_run8"
+	  number_of_robots="9"
+	  number_of_runs="1"
+	  number_of_qualities="2"
+	  r_0="0"
+	  w_0="9"
+>>>>>>> 822486754f22c927c34a3e4691f23f6429067fc1
 	  b_0="0"	  
 	  length_of_runs="6000"
 	  g="10"
@@ -143,7 +157,11 @@
    <distribute>
       <position method="uniform" min="0.1,0.1,0" max="1.9,1.9,0" />
       <orientation method="gaussian" mean="1,1,0 " std_dev="360,0,0 " />
+<<<<<<< HEAD
       <entity quantity="20" max_trials="20">
+=======
+      <entity quantity="9" max_trials="20">
+>>>>>>> 822486754f22c927c34a3e4691f23f6429067fc1
         <e-puck id="ep" >
           <controller config="epc" />
         </e-puck>
