@@ -28,9 +28,9 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   virtual void Init(TConfigurationNode& t_node);
   virtual CColor GetFloorColor(const CVector2& c_pos_on_floor);
 
-		inline UInt32 GetGrid(UInt32 i) {
-			return grid[i];
-		}
+  inline UInt32 GetGrid(UInt32 i) {
+    return grid[i];
+  }
 
 		virtual void Reset();
 		virtual void InitRobots();
@@ -60,7 +60,8 @@ private:
   CRandom::CRNG* m_pcRNG;
   bool m_bExperimentFinished;
   CFloorEntity* m_pcFloor;
-  UInt32 colorOfCell[N_COL], grid[NUM_OF_CELLS]; // Cells colors and grid with all the arenas cells
+  UInt32 colorOfCell[N_COL];
+  std::vector<UInt32> grid;
 
   int totalCells;
   Real arenaSize;
@@ -155,6 +156,7 @@ private:
   bool subswarmConsensus;
   int colorMixing;
   bool determineConsensus;
+  bool checkBalance;
 };
 
 #endif

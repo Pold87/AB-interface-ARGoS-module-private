@@ -116,6 +116,7 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
     GetNodeAttribute(tEnvironment, "contract_address", contractAddress);
     GetNodeAttribute(tEnvironment, "contract_abi", contractABI);
     GetNodeAttribute(tEnvironment, "container_name_base", containerNameBase);
+    GetNodeAttribute(tEnvironment, "check_balance", checkBalance);
   }
   catch(CARGoSException& ex)
   {
@@ -235,8 +236,9 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
     UInt32 s = 0;
 
     cout << "Random number is " << selRobot << endl;
-    
-    string mean, localCount, voteCount, weight, blockchainSize, blockNumber;
+
+    std::stringstream balanceStream;
+    string mean, localCount, voteCount, weight, blockchainSize, blockNumber, balance;
     int totalSubmittedVotes = 0;
 
     CSpace::TMapPerType& m_cEpuck = GetSpace().GetEntitiesByType("epuck");
@@ -248,6 +250,17 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
 
       totalSubmittedVotes += cController.getMySubmittedVotes();
+
+      if (checkBalance) {
+	//string tmpBalance = cController.getGethInterface().scReturn0NoIntConversion("getBalance", 0);
+	string tmpBalance = cController.getGethInterface().execGethCmdReturn("eth.getBalance(eth.coinbase)");
+	cout << "tmpBalance is " << tmpBalance << endl;
+	balanceStream << tmpBalance;
+	//balanceStream << cController.getGethInterface().scReturn0NoIntConversion("getBalance", 0);
+	balanceStream << ",";
+      } else {
+	balance = "NA";
+      }
 
       if (s == selRobot) {
 
@@ -266,9 +279,17 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       s++;      
     }
 
+    cout << "Starting balance string 0 " << endl;
+    
     if (blockChainFile.is_open()) {
+
+      cout << "Starting balance string 1" << endl;
+      balance = balanceStream.str();
+      cout << "The balance string is " << balance.c_str() << endl;
+      
 //      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << "\t" << voteCount << "\t" << totalSubmittedVotes << "\t" << blockNumber << "\t" << blockchainSize << endl;
-      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << "\t" << voteCount << "\t" << totalSubmittedVotes << "\t" << blockNumber << "\t" << "NA" << endl;
+
+      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << "\t" << voteCount << "\t" << totalSubmittedVotes << "\t" << blockNumber << "\t" << balance << endl;
     }
     
     if (everyTicksFile.is_open()) {
@@ -288,7 +309,11 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
   TConfigurationNode& tEnvironment = GetNode(t_node, "cells");
   fillSettings(tEnvironment);
 
+  cout << "cellDimension is " << cellDimension << endl;
+  
   totalCells = (arenaSize / cellDimension) * (arenaSize / cellDimension);
+
+  cout << "totalCells is " << totalCells << endl;
   
   time_t ti;
   time(&ti);
@@ -307,9 +332,12 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
   {
     for( int c = 0; c < N_COL; c++ )
     {
-      colorOfCell[c] = (int)(percentageOfColors[c]*((Real)totalCells/100.0));
+      colorOfCell[c] = (int)(percentageOfColors[c] * ((Real)totalCells / 100.0));
       cout << "Color: " << colorOfCell[c] << endl;
     }
+
+    grid = vector<UInt32>(totalCells, 0);
+    
   }
 
   /*
@@ -414,14 +442,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
 	} else {
 	  grid[k] = normalColor;
 	}
-	
-	
-	// if ((myrow % everyXRow) == 0)  {
-	//   grid[k] = 2;
-	// } else {
-	//   grid[k] = 1;
-	// }
-	
+		
 	k++;
 	}	
 
@@ -1054,7 +1075,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
 
       EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
       totalConsensusReached = totalConsensusReached && cController.getConsensusReached();
-      cout << "Robot ID is " << cController.getRobotId() << "Consensus is " << cController.getConsensusReached() << endl;
+      //      cout << "Robot ID is " << cController.getRobotId() << "Consensus is " << cController.getConsensusReached() << endl;
     }
 
 

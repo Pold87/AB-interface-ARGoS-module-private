@@ -21,7 +21,11 @@ public:
   GethInterface(int robot, std::string ab, std::string ad, std::string cn, std::string cnb, std::string cl, std::string p);
   std::string readStringFromFile(std::string fileName);
   std::string exec(std::string cmdStr);
-  std::string removeSpace(std::string str);
+  std::string removeNewline(std::string str);
+  std::string removeSpaces(std::string str);
+  std::string removeCarriageReturn(std::string str);
+  std::string removeColor(std::string str);
+  std::string normalizeString(std::string str);
   void dockerExec(std::string cmd);
   void dockerExecForeground(std::string cmd);
   void dockerExecBackground(std::string cmd);
@@ -34,8 +38,10 @@ public:
   void scInterface(std::string function, int arg, std::string wei);
   void scInterfaceCall0(std::string function, long long wei);
   std::string scReturn0(std::string function, long long wei);
+  std::string scReturn0NoIntConversion(std::string function, long long wei);
   void execTemplate(std::string templateName, int numArgs, int args[], long long wei);
   void execGethCmd(std::string command);
+  std::string execGethCmdReturn(std::string command);
   void execGethCmdBackground(std::string command);
   void unlockAccount();
   void startMining();

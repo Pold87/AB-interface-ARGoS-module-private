@@ -26,7 +26,7 @@
       <actuators>
 	<epuck_wheels implementation="default" />
         <leds implementation="default" medium="leds" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.10" />
+        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.08" />
       </actuators>
       <sensors>
         <!--epuck_motor_ground implementation="rot_z_only" /-->
@@ -82,7 +82,7 @@
 	  exit="true"            
 	  percent_black="PERCENT_BLACK"
 	  percent_red="0"
-	  save_every_ticks="10000"
+	  save_every_ticks="SAVEEVERYTICKS"
 	  save_every_ticks_flag="true"
 	  save_every_run_flag="true"
 	  save_blockchain_flag="true"
@@ -113,7 +113,8 @@
 	  contract_address="CONTRACTADDRESS"
 	  contract_abi="CONTRACTABI"
 	  container_name_base="CONTAINERNAMEBASE"
-	  determine_consensus="DETERMINECONSENSUS"/>
+	  determine_consensus="DETERMINECONSENSUS"
+	  check_balance="CHECKBALANCE"/>
 
   </loop_functions>
   <!-- *********************** -->

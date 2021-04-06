@@ -2,7 +2,7 @@
 
 USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
-DOCKERBASE='/home/eksander/AB-interface/Blockchain-module/'
+DOCKERBASE='/home/volker/software/AB-interface/Blockchain-module/'
 TEMPLATE='./experiments/epuck_EC_locale_template.argos'
 CONTRACT="${DOCKERBASE}/geth/shared/Estimation.sol"
 SCTEMPLATE="${DOCKERBASE}/geth/shared/experiment.sol" # <- this is the smart contract you want to use
@@ -12,31 +12,34 @@ BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 GENESISTEMPLATE="${DOCKERBASE}/geth/files/genesis_poa.json_template"
 GENESIS="${DOCKERBASE}/geth/files/genesis_poa.json"
-
+SAVEEVERYTICKS=10000
 
 DECISIONRULE=3 
 NUMROBOTS=(4)
-REPETITIONS=10
+REPETITIONS=20
 TAUS=(1000000)
 LENGTHOFRUNS=(1000)
 
 MIXINGS=1
 VISUALIZATION=none #visualization or none
 
-ARENASIZEDIM="1.0"
+TOTALNUMBEROFCELLS=100
+
+#ARENASIZEDIM="1.0"
+ARENASIZEDIMS=("1.0")
 CELLDIMENSION="0.1"
 # Cell dimension should be ARENASIZE / 20 for 400 tiles
 # The cell dimension can be changed, this will result in more or less tiles
 # HOWEVER!!: Then you also have to change header file value for NUM_CELLS
-ARENASIZEPLUSLARGE=`echo "scale=4; $ARENASIZEDIM + 0.1" | bc`
-ARENASIZEPLUSSMALL=`echo "scale=4; $ARENASIZEDIM + 0.0075" | bc`
-ARENASIZEHALF=`echo "scale=4; $ARENASIZEDIM / 2" | bc`
-ARENASIZEMINUS=`echo "scale=4; $ARENASIZEDIM - 0.1" | bc`
+#ARENASIZEPLUSLARGE=`echo "scale=4; $ARENASIZEDIM + 0.1" | bc`
+#ARENASIZEPLUSSMALL=`echo "scale=4; $ARENASIZEDIM + 0.0075" | bc`
+#ARENASIZEHALF=`echo "scale=4; $ARENASIZEDIM / 2" | bc`
+#ARENASIZEMINUS=`echo "scale=4; $ARENASIZEDIM - 0.1" | bc`
 
-echo ${ARENASIZEPLUSLARGE}
-echo ${ARENASIZEPLUSSMALL}
-echo ${ARENASIZEHALF}
-echo ${ARENASIZEMINUS}
+#echo ${ARENASIZEPLUSLARGE}
+#echo ${ARENASIZEPLUSSMALL}
+#echo ${ARENASIZEHALF}
+#echo ${ARENASIZEMINUS}
 
 MININGDIFF=1000000
 USEMULTIPLENODES=true
@@ -54,6 +57,7 @@ CONTRACTADDRESS="${DOCKERBASE}/geth/deployed_contract/contractAddress.txt"
 CONTRACTABI="${DOCKERBASE}/geth/deployed_contract/contractABI.abi"
 MAXFLOODING=20
 REALTIME="true"
+CHECKBALANCE="false"
 
 # 1: Always send 0.0 as value
 # 2: Always send 1.0 as value

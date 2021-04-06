@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdexcept>
+#include <regex>
 
 #define DEBUG false
 
@@ -54,11 +55,16 @@ string GethInterface::exec(const string cmdStr) {
     throw;
   }
   pclose(pipe);
-  result = removeSpace(result);
+  result = removeNewline(result);
   return result;
 }
 
-string GethInterface::removeSpace(string str) {
+string GethInterface::removeSpaces(string str) {
+  str.erase(remove(str.begin(), str.end(), ' '), str.end()); 
+  return str; 
+}
+
+string GethInterface::removeNewline(string str) {
 
   string noSpace = str;
   
@@ -68,6 +74,41 @@ string GethInterface::removeSpace(string str) {
   
   return noSpace;
 }
+
+
+string GethInterface::removeCarriageReturn(string str) {
+
+  string noSpace = str;
+  
+  noSpace.erase(std::remove(noSpace.begin(), 
+			    noSpace.end(), '\r'),
+		       noSpace.end());
+  
+  return noSpace;
+}
+
+
+string GethInterface::removeColor(string str) {
+  std::regex color_re("\u001B\\[[;\\d]*m");
+  
+  string output = str;
+ 
+   // construct a string holding the results
+  output = regex_replace(output, color_re, "");
+  
+  return output;
+    
+}
+
+string GethInterface::normalizeString(string str)
+{
+  string output = str;
+  output.erase(std::remove(output.begin(),output.end(),' '),output.end());
+  output.resize(remove_if(output.begin(), output.end(),[](char x){return !isalnum(x) && !isspace(x);})-output.begin());
+  
+  return output;
+}
+
 
 void GethInterface::wrapSSH(std::string cmd) {
   ostringstream commandStream;
@@ -245,12 +286,78 @@ string GethInterface::scReturn0(string function, long long wei) {
   return ss.str();
 }
 
+
+// TODO: This function is not good because of the use of atoi; we
+// should at least check if the result is an integer
+string GethInterface::scReturn0NoIntConversion(string function, long long wei) {
+
+  ostringstream commandStream;
+  commandStream << "bash /root/generic_sc_interface_call_0.sh \'"
+		<< contractABI << "\' " << contractAddress << " "
+		<< function << " " << wei;
+
+  string s = dockerExecReturn(commandStream.str());
+
+  cout << "s is " << s.c_str() << endl;
+
+  // For atoi, the input string has to start with a digit, so let's
+  // search for the first digit
+  size_t i = 0;
+  for ( ; i < s.length(); i++ ) {
+    if (isdigit(s[i])) break;
+  }
+
+  // remove the first chars, which aren't digits
+  s = s.substr(i, s.length() - i );
+
+  return normalizeString(s);
+}
+
+
 void GethInterface::execGethCmd(std::string command) {
   ostringstream commandStream;
   cout << "containerName is " << containerName << endl;
   commandStream << "bash /root/exec_cmd.sh "
 		<< "'" << command << "'";
   dockerExec(commandStream.str());
+}
+
+string GethInterface::execGethCmdReturn(std::string command) {
+  ostringstream commandStream;
+  cout << "containerName is " << containerName << endl;
+  commandStream << "bash /root/exec_cmd.sh "
+		<< "'" << command << "'";
+  string s = dockerExecReturn(commandStream.str());
+
+  cout << "s is " << s << endl;
+
+  // For atoi, the input string has to start with a digit, so let's
+  // search for the first digit
+  size_t i = 0;
+  for ( ; i < s.length(); i++ ) {
+    if (isdigit(s[i])) break;
+  }
+
+  // remove the first chars, which aren't digits
+  //s = s.substr(i, s.length() - i );
+
+
+  s = removeNewline(s);
+
+  s = removeSpaces(s);
+
+  s = removeColor(s);
+
+  s = removeCarriageReturn(s);
+
+  std::ostringstream ss;
+  ss << s.c_str();
+  
+  
+  return ss.str();
+
+
+  //return res;
 }
 
 
@@ -297,12 +404,12 @@ void GethInterface::removePeer(string enode) {
 
 string GethInterface::getEnode() {
   string enode = dockerExecReturn("cat /root/my_enode.enode");
-  return removeSpace(enode);
+  return removeNewline(enode);
 }	
 
 string GethInterface::getBootstrap() {
   string enode = dockerExecBootstrapReturn("cat /root/my_enode.enode");
-  return removeSpace(enode);
+  return removeNewline(enode);
 }
 
 string GethInterface::getContractABI() {

@@ -25,12 +25,30 @@ for i in `seq 1 $REPETITIONS`; do
 	     R0=$k
 	     B0=0
 
+	     for ARENASIZEDIM in "${ARENASIZEDIMS[@]}"; do
+
+		     #CELLDIMENSION=`echo "scale=1; $ARENASIZEDIM / 10" | bc`
+		 # Cell dimension should be ARENASIZE / 10 for 100 tiles
+		 # The cell dimension can be changed, this will result in more or less tiles
+		 # HOWEVER!!: Then you also have to change header file value for NUM_CELLS
+		 ARENASIZEPLUSLARGE=`echo "scale=4; $ARENASIZEDIM + 0.1" | bc`
+		 ARENASIZEPLUSSMALL=`echo "scale=4; $ARENASIZEDIM + 0.0075" | bc`
+		 ARENASIZEHALF=`echo "scale=4; $ARENASIZEDIM / 2" | bc`
+		 ARENASIZEMINUS=`echo "scale=4; $ARENASIZEDIM - 0.1" | bc`
+		 
+		 echo ${CELLDIMENSION}
+		 echo ${ARENASIZEPLUSLARGE}
+		 echo ${ARENASIZEPLUSSMALL}
+		 echo ${ARENASIZEHALF}
+		 echo ${ARENASIZEMINUS}
+		 
+
 	 for p in "${PERCENT_BLACKS[@]}"; do
 
 	PERCENT_BLACK=$p
 	PERCENT_WHITE=$(expr 100 - $PERCENT_BLACK)
 	
-	RADIX=$(printf 'num%d_black%d_byz%d_run%d' $k $PERCENT_BLACK $y $i)
+	RADIX=$(printf 'num%d_black%d_byz%d_size%q_run%d' $k $PERCENT_BLACK $y $ARENASIZEDIM $i)
 
         # Create smart contract with specified tau (threshold)
 	  rm -f ${SCOUTFILE} ${CONTRACT}          
@@ -54,11 +72,11 @@ for i in `seq 1 $REPETITIONS`; do
 	  sed -ie "s|0x47b760|0x9000000000000|g" ${GENESIS}
 
 	  # Change the value of the pre-funded accounts
-	  sed -ie "s|\"0x200000000000000000000000000000000000000000000000000000000000000\"|\"0xde0b6b3a7640000\"|g" ${GENESIS}
+	  sed -ie "s|\"0x200000000000000000000000000000000000000000000000000000000000000\"|\"0x1236efcbcbb340000\"|g" ${GENESIS}
 # 0x1236efcbcbb340000 = 21 ether
 # 0xde0b6b3a7640000 = 1 ether
 	  # Undo for the contract account (first match)
-	  sed -ie "0,/\"0xde0b6b3a7640000\"/s//\"0x200000000000000000000000000000000000000000000000000000000000000\"/" ${GENESIS}
+	  sed -ie "0,/\"0x1236efcbcbb340000\"/s//\"0x200000000000000000000000000000000000000000000000000000000000000\"/" ${GENESIS}
 	  
 	  # Update the contract ABI to make it compatible with the
 	  # geth console (latest solc and latest geth console are
@@ -105,6 +123,8 @@ for i in `seq 1 $REPETITIONS`; do
 	    -e "s|ARENASIZEMINUS|$ARENASIZEMINUS|g"\
 	    -e "s|CELLDIMENSION|$CELLDIMENSION|g"\
 	    -e "s|VISUALIZATION|$VISUALIZATION|g"\
+	    -e "s|CHECKBALANCE|$CHECKBALANCE|g"\
+	    -e "s|SAVEEVERYTICKS|$SAVEEVERYTICKS|g"\
 	      $TEMPLATE > $OUTFILE
 	      
 	bash ${DOCKERBASE}/local_scripts/stop_network.sh $k
@@ -120,13 +140,14 @@ for i in `seq 1 $REPETITIONS`; do
 
 	 done
 	     done
-	 
-		 done
-
 	     done
-
+	     
+		 done
+		 
+	     done
+	     
 	 done
-    
+	 
      done
 done
 
